@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - REPA</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .header a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .header a:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 15px;
+            font-family: inherit;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #d0d0d0;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .message {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: block;
+        }
+
+        .message.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+            display: block;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+
+        .info-text {
+            color: #666;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .btn-info {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .btn-info:hover:not(:disabled) {
+            background: #138496;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(23, 162, 184, 0.4);
+        }
+
+        .analysis-content {
+            line-height: 1.6;
+        }
+
+        .analysis-content h1,
+        .analysis-content h2,
+        .analysis-content h3 {
+            margin-top: 20px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .analysis-content img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+
+        .analysis-content ul,
+        .analysis-content ol {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        .analysis-content code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .analysis-content pre {
+            background: #f4f4f4;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+
+        /* Analysis styling - matching chat interface */
+        .analysis-item {
+            background: #f8f9fa;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border-left: 4px solid #667eea;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .analysis-item:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .analysis-header {
+            padding: 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .analysis-header:hover {
+            background: #f8f9fa;
+        }
+
+        .analysis-header-content {
+            flex: 1;
+        }
+
+        .analysis-header h4 {
+            margin: 0 0 8px 0;
+            color: #333;
+            font-size: 18px;
+        }
+
+        .analysis-header h4 a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .analysis-header h4 a:hover {
+            text-decoration: underline;
+        }
+
+        .analysis-meta {
+            color: #666;
+            font-size: 14px;
+            margin: 0;
+        }
+
+        .analysis-toggle {
+            color: #667eea;
+            font-size: 24px;
+            font-weight: bold;
+            user-select: none;
+            transition: transform 0.3s ease;
+            margin-left: 15px;
+        }
+
+        .analysis-item.collapsed .analysis-toggle {
+            transform: rotate(-90deg);
+        }
+
+        .analysis-content-wrapper {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .analysis-item.expanded .analysis-content-wrapper {
+            max-height: 5000px;
+        }
+
+        .analysis-content {
+            padding: 20px;
+            background: white;
+        }
+
+        /* Markdown styling matching chat interface */
+        .analysis-content h1 {
+            font-size: 24px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .analysis-content h2 {
+            font-size: 20px;
+            color: #667eea;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        .analysis-content h3 {
+            font-size: 16px;
+            color: #764ba2;
+            font-weight: 600;
+            margin-top: 15px;
+            margin-bottom: 8px;
+        }
+
+        .analysis-content p {
+            margin-bottom: 12px;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .analysis-content ul,
+        .analysis-content ol {
+            margin-left: 20px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        .analysis-content li {
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+
+        .analysis-content strong {
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .analysis-content hr {
+            border: none;
+            border-top: 1px solid #e0e0e0;
+            margin: 20px 0;
+        }
+
+        .analysis-content img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin: 15px 0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            display: block;
+        }
+
+        .analysis-content em {
+            color: #666;
+            font-style: italic;
+        }
+
+        .analysis-content code {
+            background: #f8f9fa;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+        }
+
+        .analysis-content pre {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+
+        .analysis-content pre code {
+            background: none;
+            padding: 0;
+        }
+
+        .analysis-content blockquote {
+            border-left: 4px solid #667eea;
+            padding-left: 15px;
+            margin: 10px 0;
+            color: #666;
+        }
+
+        .analysis-content a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .analysis-content a:hover {
+            text-decoration: underline;
+        }
+
+        .analysis-actions {
+            padding: 15px 20px;
+            background: #f8f9fa;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .analysis-actions a {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 14px;
+            padding: 8px 15px;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+
+        .analysis-actions a:hover {
+            background: rgba(102, 126, 234, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏠 User Profile</h1>
+            <a href="/">Back to Chat</a>
+        </div>
+        
+        <div class="content">
+            <div class="message" id="message"></div>
+            
+            <div id="loading" class="loading">Loading your criteria...</div>
+            
+            <form id="criteriaForm" style="display: none;">
+                <h2 style="margin-bottom: 25px; color: #333;">Your Apartment Criteria</h2>
+                
+                <div class="form-group">
+                    <label for="property_type">Property Type</label>
+                    <select id="property_type" onchange="updatePriceLabels()">
+                        <option value="">Select...</option>
+                        <option value="rent">Rent</option>
+                        <option value="buy">Buy</option>
+                    </select>
+                    <div class="info-text">Are you looking to rent or buy?</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="location">Location</label>
+                    <input type="text" id="location" placeholder="e.g., Zürich, 8008 Zürich, Bern">
+                    <div class="info-text">City, postal code, or area</div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="min_rooms">Min Rooms</label>
+                        <input type="number" id="min_rooms" min="0" step="0.5" placeholder="e.g., 3">
+                    </div>
+                    <div class="form-group">
+                        <label for="max_rooms">Max Rooms</label>
+                        <input type="number" id="max_rooms" min="0" step="0.5" placeholder="e.g., 5">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="min_living_space">Min Living Space (m²)</label>
+                        <input type="number" id="min_living_space" min="0" step="0.01" placeholder="e.g., 80">
+                    </div>
+                    <div class="form-group">
+                        <label for="max_living_space">Max Living Space (m²)</label>
+                        <input type="number" id="max_living_space" min="0" step="0.01" placeholder="e.g., 120">
+                    </div>
+                </div>
+
+                <div class="form-row" id="priceFields">
+                    <div class="form-group">
+                        <label for="min_rent" id="min_price_label">Min Rent (CHF)</label>
+                        <input type="number" id="min_rent" min="0" step="0.01" placeholder="e.g., 2000">
+                    </div>
+                    <div class="form-group">
+                        <label for="max_rent" id="max_price_label">Max Rent (CHF)</label>
+                        <input type="number" id="max_rent" min="0" step="0.01" placeholder="e.g., 4000">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="occupants">Number of Occupants</label>
+                        <input type="number" id="occupants" min="1" placeholder="e.g., 2">
+                    </div>
+                    <div class="form-group">
+                        <label for="duration">Duration</label>
+                        <input type="text" id="duration" placeholder="e.g., ski season, 6 months, long-term">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="starting_when">Starting When</label>
+                    <input type="text" id="starting_when" placeholder="e.g., January 2024, immediately">
+                </div>
+
+                <div class="form-group">
+                    <label for="user_additional_requirements">Additional Requirements (JSON)</label>
+                    <textarea id="user_additional_requirements" placeholder='{"pet_friendly": true, "balcony": true, "parking": true}'></textarea>
+                    <div class="info-text">Enter as JSON object, e.g., {"pet_friendly": true, "balcony": true}</div>
+                </div>
+
+                <hr style="margin: 30px 0; border: none; border-top: 2px solid #e0e0e0;">
+
+                <h3 style="margin-bottom: 20px; color: #333;">📧 Email Monitoring</h3>
+                <div class="info-box" style="background: #e3f2fd; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                    <strong>How it works:</strong> REPA will automatically check your email every 5 minutes for new listings. Configure which emails to monitor by setting the sender and subject keywords below. REPA will:
+                    <ul style="margin-top: 10px; margin-left: 20px;">
+                        <li>Check for emails from the configured sender</li>
+                        <li>Filter emails containing your specified keywords in the subject</li>
+                        <li>Extract listing URLs from matching emails</li>
+                        <li>Automatically analyze each listing against your saved criteria</li>
+                        <li>Store the results for your review</li>
+                    </ul>
+                    <p style="margin-top: 10px; margin-bottom: 0;"><strong>Setup Steps:</strong> Enable monitoring below, configure your filters, enter your email and app password, then click "Save Criteria". REPA will start monitoring automatically!</p>
+                </div>
+
+                <div class="form-group" style="display: flex; align-items: center; gap: 10px;">
+                    <input type="checkbox" id="email_monitoring_enabled" style="width: auto; margin: 0;">
+                    <label for="email_monitoring_enabled" style="margin: 0; font-weight: 600;">Enable Email Monitoring</label>
+                </div>
+
+                <div class="form-group">
+                    <label for="monitor_email">Email Address to Monitor</label>
+                    <input type="email" id="monitor_email" placeholder="your.email@gmail.com">
+                    <div class="info-text">The email address where you receive property listing notifications</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email_provider">Email Provider</label>
+                    <select id="email_provider">
+                        <option value="gmail">Gmail</option>
+                        <option value="outlook">Outlook/Office365</option>
+                        <option value="yahoo">Yahoo Mail</option>
+                        <option value="icloud">iCloud Mail</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="email_sender">Email Sender Filter</label>
+                    <input type="text" id="email_sender" placeholder="e.g., homegate, immoscout24, or your email for testing">
+                    <div class="info-text">
+                        Only process emails FROM this sender (leave empty to process all emails).<br>
+                        <strong>Examples:</strong> "homegate", "immoscout24", "flatfox"<br>
+                        <strong>For testing:</strong> If you send emails to yourself, use your own email address or just the domain part (e.g., "gmail.com")
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email_subject_keywords">Subject Keywords</label>
+                    <input type="text" id="email_subject_keywords" placeholder="e.g., match, new listing, alert">
+                    <div class="info-text">Comma-separated keywords that must appear in the email subject. At least one keyword must match. Examples: "match", "match,new listing", "alert,notification"</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email_app_password">App Password</label>
+                    <input type="password" id="email_app_password" placeholder="Enter app-specific password (leave empty to keep existing)">
+                    <div class="form-group" style="display: flex; align-items: center; gap: 10px; margin-top: 10px;">
+                        <input type="checkbox" id="store_app_password" style="width: auto; margin: 0;">
+                        <label for="store_app_password" style="margin: 0; font-weight: normal;">Store App Password (optional - password will only be saved if checked)</label>
+                    </div>
+                    <div class="info-text">
+                        <strong>Getting App-Specific Passwords:</strong><br>
+                        • <strong>Gmail:</strong> <a href="https://myaccount.google.com/" target="_blank">Google Account</a> → Security → 2-Step Verification → App passwords<br>
+                        • <strong>Outlook:</strong> <a href="https://account.microsoft.com/security" target="_blank">Microsoft Account</a> → Security → Advanced security options → App passwords<br>
+                        • <strong>Yahoo:</strong> <a href="https://login.yahoo.com/account/security" target="_blank">Yahoo Account Security</a> → App passwords<br>
+                        • <strong>iCloud:</strong> <a href="https://appleid.apple.com/" target="_blank">Apple ID</a> → Sign-In and Security → App-Specific Passwords<br>
+                        <strong>⚠️ Important:</strong> You must use an app-specific password, NOT your regular email password. 2-factor authentication must be enabled.<br>
+                        <strong>💡 Tip:</strong> If a password is already stored, leave the field empty to keep it. Check the box and enter a new password to update it.
+                    </div>
+                    <div id="passwordStoredIndicator" style="display: none; color: #28a745; font-size: 14px; margin-top: 5px;">
+                        ✓ App password is stored (hidden for security)
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary" id="saveBtn">Save Criteria</button>
+                    <button type="button" class="btn btn-secondary" onclick="clearForm()">Clear</button>
+                    <button type="button" class="btn btn-info" id="checkEmailBtn" onclick="checkEmail()" style="margin-left: 10px;">Check Email Now</button>
+                </div>
+                
+                <div id="actionMessage" class="message" style="margin-top: 20px;"></div>
+            </form>
+            
+            <hr style="margin: 40px 0; border: none; border-top: 2px solid #e0e0e0;">
+            
+            <div id="analysesSection" style="display: none;">
+                <h2 style="margin-bottom: 25px; color: #333;">📊 Email Analysis Results</h2>
+                <div id="analysesLoading" class="loading">Loading analyses...</div>
+                <div id="analysesList"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let authToken = localStorage.getItem('authToken');
+        
+        if (!authToken) {
+            window.location.href = '/';
+        }
+
+        // Validate token format
+        function isValidTokenFormat(token) {
+            if (!token) return false;
+            const parts = token.split('.');
+            return parts.length === 3; // JWT has 3 parts: header.payload.signature
+        }
+
+        // Check token on page load
+        if (!isValidTokenFormat(authToken)) {
+            console.error('Invalid token format, redirecting to login');
+            localStorage.removeItem('authToken');
+            window.location.href = '/';
+        }
+
+        const criteriaForm = document.getElementById('criteriaForm');
+        const loading = document.getElementById('loading');
+        const message = document.getElementById('message');
+        const saveBtn = document.getElementById('saveBtn');
+
+        // Helper function to check if token is expired
+        function isTokenExpired(token) {
+            try {
+                const payload = JSON.parse(atob(token.split('.')[1]));
+                if (payload.exp) {
+                    const expDate = new Date(payload.exp * 1000);
+                    return expDate < new Date();
+                }
+                return false;
+            } catch (e) {
+                console.error('Error checking token expiration:', e);
+                return true; // If we can't parse, assume expired
+            }
+        }
+
+        // Load existing criteria
+        async function loadCriteria() {
+            if (!authToken) {
+                loading.textContent = 'Not authenticated. Redirecting...';
+                setTimeout(() => window.location.href = '/', 2000);
+                return;
+            }
+
+            // Check if token is expired
+            if (isTokenExpired(authToken)) {
+                console.warn('Token expired, redirecting to login');
+                localStorage.removeItem('authToken');
+                loading.textContent = 'Session expired. Redirecting to login...';
+                setTimeout(() => window.location.href = '/', 2000);
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/user/criteria', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include'  // Include credentials for CORS
+                });
+
+                if (response.status === 401) {
+                    // Token expired or invalid - redirect to login
+                    console.error('Authentication failed, redirecting to login');
+                    localStorage.removeItem('authToken');
+                    window.location.href = '/';
+                    return;
+                }
+
+                if (response.status === 404) {
+                    // No criteria yet, show empty form with helpful message
+                    loading.style.display = 'none';
+                    criteriaForm.style.display = 'block';
+                    showMessage('No saved preferences yet. Fill in your criteria below and click "Save Criteria" to save them.', 'info');
+                    return;
+                }
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    let errorData;
+                    try {
+                        errorData = JSON.parse(errorText);
+                    } catch {
+                        errorData = { detail: errorText || `HTTP ${response.status}` };
+                    }
+                    
+                    // Handle JWT expired error specifically
+                    if (response.status === 401 || (errorData.detail && (errorData.detail.includes('JWT expired') || errorData.detail.includes('expired')))) {
+                        console.warn('JWT token expired, redirecting to login');
+                        localStorage.removeItem('authToken');
+                        loading.textContent = 'Session expired. Redirecting to login...';
+                        setTimeout(() => window.location.href = '/', 2000);
+                        return;
+                    }
+                    
+                    throw new Error(errorData.detail || 'Failed to load criteria');
+                }
+
+                const data = await response.json();
+                
+                console.log('Loaded criteria data:', data);
+                
+                // Populate form
+                if (data.property_type) {
+                    document.getElementById('property_type').value = data.property_type;
+                }
+                // Update price labels based on property type
+                updatePriceLabels();
+                
+                if (data.location) {
+                    document.getElementById('location').value = data.location;
+                }
+                if (data.min_rooms !== null && data.min_rooms !== undefined) {
+                    document.getElementById('min_rooms').value = data.min_rooms;
+                }
+                if (data.max_rooms !== null && data.max_rooms !== undefined) {
+                    document.getElementById('max_rooms').value = data.max_rooms;
+                }
+                if (data.min_living_space !== null && data.min_living_space !== undefined) {
+                    document.getElementById('min_living_space').value = data.min_living_space;
+                }
+                if (data.max_living_space !== null && data.max_living_space !== undefined) {
+                    document.getElementById('max_living_space').value = data.max_living_space;
+                }
+                if (data.min_rent !== null && data.min_rent !== undefined) {
+                    document.getElementById('min_rent').value = data.min_rent;
+                }
+                if (data.max_rent !== null && data.max_rent !== undefined) {
+                    document.getElementById('max_rent').value = data.max_rent;
+                }
+                if (data.occupants !== null && data.occupants !== undefined) {
+                    document.getElementById('occupants').value = data.occupants;
+                }
+                if (data.duration) {
+                    document.getElementById('duration').value = data.duration;
+                }
+                if (data.starting_when) {
+                    document.getElementById('starting_when').value = data.starting_when;
+                }
+                
+                if (data.user_additional_requirements) {
+                    document.getElementById('user_additional_requirements').value = 
+                        JSON.stringify(data.user_additional_requirements, null, 2);
+                }
+                
+                // Populate email fields
+                document.getElementById('email_monitoring_enabled').checked = data.email_monitoring_enabled || false;
+                document.getElementById('monitor_email').value = data.monitor_email || '';
+                document.getElementById('email_provider').value = data.email_provider || 'gmail';
+                document.getElementById('email_sender').value = data.email_sender || '';
+                document.getElementById('email_subject_keywords').value = data.email_subject_keywords || '';
+                
+                // Check if app password is stored (we can't show it, but we can indicate it exists)
+                // We'll check this by seeing if email_monitoring_enabled is true and monitor_email exists
+                // This is a heuristic - if they have email monitoring enabled, they likely have a password stored
+                if (data.email_monitoring_enabled && data.monitor_email) {
+                    const passwordIndicator = document.getElementById('passwordStoredIndicator');
+                    if (passwordIndicator) {
+                        passwordIndicator.style.display = 'block';
+                    }
+                }
+                // Note: email_app_password is not returned for security reasons
+
+                loading.style.display = 'none';
+                criteriaForm.style.display = 'block';
+            } catch (error) {
+                console.error('Error loading criteria:', error);
+                
+                // Check if it's a JWT expired error
+                const errorMsg = error.message || '';
+                if (errorMsg.includes('JWT expired') || errorMsg.includes('expired') || errorMsg.includes('Token expired')) {
+                    console.warn('JWT token expired, redirecting to login');
+                    localStorage.removeItem('authToken');
+                    loading.textContent = 'Session expired. Redirecting to login...';
+                    setTimeout(() => window.location.href = '/', 2000);
+                    return;
+                }
+                
+                loading.style.display = 'none';
+                criteriaForm.style.display = 'block';
+                showMessage('Error loading criteria: ' + errorMsg, 'error');
+            }
+        }
+
+        async function saveCriteria(e) {
+            e.preventDefault();
+            
+            saveBtn.disabled = true;
+            hideActionMessage();
+
+            try {
+                // Parse additional requirements JSON
+                let additionalRequirements = null;
+                const additionalReqText = document.getElementById('user_additional_requirements').value.trim();
+                if (additionalReqText) {
+                    try {
+                        additionalRequirements = JSON.parse(additionalReqText);
+                    } catch (e) {
+                        throw new Error('Invalid JSON in Additional Requirements field');
+                    }
+                }
+
+                const criteria = {
+                    property_type: document.getElementById('property_type').value || null,
+                    location: document.getElementById('location').value || null,
+                    min_rooms: document.getElementById('min_rooms').value ? parseInt(document.getElementById('min_rooms').value) : null,
+                    max_rooms: document.getElementById('max_rooms').value ? parseInt(document.getElementById('max_rooms').value) : null,
+                    min_living_space: document.getElementById('min_living_space').value ? parseFloat(document.getElementById('min_living_space').value) : null,
+                    max_living_space: document.getElementById('max_living_space').value ? parseFloat(document.getElementById('max_living_space').value) : null,
+                    min_rent: document.getElementById('min_rent').value ? parseFloat(document.getElementById('min_rent').value) : null,
+                    max_rent: document.getElementById('max_rent').value ? parseFloat(document.getElementById('max_rent').value) : null,
+                    occupants: document.getElementById('occupants').value ? parseInt(document.getElementById('occupants').value) : null,
+                    duration: document.getElementById('duration').value || null,
+                    starting_when: document.getElementById('starting_when').value || null,
+                    user_additional_requirements: additionalRequirements,
+                    email_monitoring_enabled: document.getElementById('email_monitoring_enabled').checked,
+                    monitor_email: document.getElementById('monitor_email').value || null,
+                    email_provider: document.getElementById('email_provider').value || 'gmail',
+                    email_sender: document.getElementById('email_sender').value || null,
+                    email_subject_keywords: document.getElementById('email_subject_keywords').value || null
+                };
+
+                // Handle app password: only include if checkbox is checked AND password is provided
+                const storePasswordCheckbox = document.getElementById('store_app_password');
+                const appPasswordInput = document.getElementById('email_app_password');
+                if (storePasswordCheckbox && storePasswordCheckbox.checked && appPasswordInput && appPasswordInput.value.trim()) {
+                    criteria.email_app_password = appPasswordInput.value.trim();
+                }
+                // If checkbox is not checked or password is empty, don't include it (keeps existing password)
+
+                // Remove null and empty string values (but keep false for booleans)
+                Object.keys(criteria).forEach(key => {
+                    if (criteria[key] === null || criteria[key] === '') {
+                        delete criteria[key];
+                    }
+                });
+                
+                // Always include email_monitoring_enabled even if false
+                criteria.email_monitoring_enabled = document.getElementById('email_monitoring_enabled').checked;
+                
+                // Always include email_provider (has default)
+                criteria.email_provider = document.getElementById('email_provider').value || 'gmail';
+
+                console.log('Saving criteria:', criteria);
+
+                const response = await fetch('/api/user/criteria', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify(criteria),
+                    credentials: 'include'  // Include credentials for CORS
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    let errorData;
+                    try {
+                        errorData = JSON.parse(errorText);
+                    } catch {
+                        errorData = { detail: errorText || `HTTP ${response.status}` };
+                    }
+                    console.error('Save failed:', errorData);
+                    throw new Error(errorData.detail || 'Failed to save criteria');
+                }
+
+                const savedData = await response.json();
+                console.log('Criteria saved successfully:', savedData);
+                
+                showActionMessage('Criteria saved successfully!', 'success');
+                
+                // Reload the form to show saved data
+                setTimeout(() => {
+                    loadCriteria();
+                }, 500);
+                
+                // Reload analyses after saving
+                loadAnalyses();
+            } catch (error) {
+                console.error('Error saving criteria:', error);
+                showActionMessage(error.message || 'Failed to save criteria', 'error');
+            } finally {
+                saveBtn.disabled = false;
+            }
+        }
+
+        function clearForm() {
+            criteriaForm.reset();
+            hideActionMessage();
+        }
+
+        function showMessage(text, type) {
+            message.textContent = text;
+            message.className = `message ${type}`;
+            setTimeout(hideMessage, 5000);
+        }
+
+        function hideMessage() {
+            message.className = 'message';
+        }
+
+        function showActionMessage(text, type) {
+            const actionMsg = document.getElementById('actionMessage');
+            actionMsg.textContent = text;
+            actionMsg.className = `message ${type}`;
+            setTimeout(hideActionMessage, 8000);
+        }
+
+        function hideActionMessage() {
+            const actionMsg = document.getElementById('actionMessage');
+            actionMsg.className = 'message';
+        }
+
+        async function checkEmail() {
+            const checkBtn = document.getElementById('checkEmailBtn');
+            checkBtn.disabled = true;
+            checkBtn.textContent = 'Checking...';
+            hideActionMessage();
+            
+            try {
+                const response = await fetch('/api/user/check-email', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    credentials: 'include'  // Include credentials for CORS
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    let errorData;
+                    try {
+                        errorData = JSON.parse(errorText);
+                    } catch {
+                        errorData = { detail: errorText || `HTTP ${response.status}` };
+                    }
+                    
+                    // Extract missing fields from error message
+                    let errorMsg = errorData.detail || 'Failed to check email';
+                    if (errorMsg.includes('Missing required fields:')) {
+                        errorMsg = errorData.detail;
+                    } else if (errorMsg.includes('Email monitoring is not enabled')) {
+                        errorMsg = 'Email monitoring is not enabled. Please check the "Enable Email Monitoring" checkbox and click "Save Criteria" first.';
+                    } else if (errorMsg.includes('Email address or app password not configured')) {
+                        errorMsg = 'Missing required fields: Email Address to Monitor and/or App Password. Please fill these fields and click "Save Criteria" first.';
+                    }
+                    
+                    throw new Error(errorMsg);
+                }
+
+                showActionMessage('Email check started! REPA will analyze any new listings found. Check the Analysis Results section below in a few moments.', 'success');
+                // Reload analyses after a delay
+                setTimeout(loadAnalyses, 3000);
+            } catch (error) {
+                console.error('Error checking email:', error);
+                showActionMessage(error.message || 'Failed to check email', 'error');
+            } finally {
+                checkBtn.disabled = false;
+                checkBtn.textContent = 'Check Email Now';
+            }
+        }
+
+        async function loadAnalyses() {
+            const analysesSection = document.getElementById('analysesSection');
+            const analysesLoading = document.getElementById('analysesLoading');
+            const analysesList = document.getElementById('analysesList');
+            
+            try {
+                analysesSection.style.display = 'block';
+                analysesLoading.style.display = 'block';
+                analysesList.innerHTML = '';
+                
+                const response = await fetch('/api/user/analyses', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include'
+                });
+
+                if (!response.ok) {
+                    // Handle 404 as empty results (no analyses yet)
+                    if (response.status === 404) {
+                        analysesLoading.style.display = 'none';
+                        analysesList.innerHTML = '<p style="color: #666; text-align: center; padding: 20px;">No analyses yet. Click "Check Email Now" to analyze listings from your emails.</p>';
+                        return;
+                    }
+                    
+                    const errorText = await response.text();
+                    let errorData;
+                    try {
+                        errorData = JSON.parse(errorText);
+                    } catch {
+                        errorData = { detail: errorText || `HTTP ${response.status}` };
+                    }
+                    throw new Error(errorData.detail || `Failed to load analyses (${response.status})`);
+                }
+
+                const data = await response.json();
+                analysesLoading.style.display = 'none';
+                
+                console.log('Analyses data:', data);
+
+                // Show pending analyses if any
+                if (data.pending && data.pending.length > 0) {
+                    const pendingHtml = data.pending.map(item => `
+                        <div style="background: #fff3cd; padding: 15px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid #ffc107;">
+                            <div style="display: flex; justify-content: space-between; align-items: start;">
+                                <div>
+                                    <h4 style="margin: 0 0 5px 0; color: #333;">
+                                        ${item.email_subject || 'Listing Analysis'}
+                                    </h4>
+                                    <p style="margin: 0; color: #666; font-size: 14px;">
+                                        From: ${item.email_from || 'Unknown'} • 
+                                        ${item.created_at ? new Date(item.created_at).toLocaleString() : 'Unknown date'}
+                                    </p>
+                                    <p style="margin: 5px 0 0 0; color: #856404;">
+                                        <a href="${item.listing_url}" target="_blank" style="color: #856404; text-decoration: underline;">
+                                            ${item.listing_url}
+                                        </a>
+                                    </p>
+                                </div>
+                                <div style="color: #856404; font-weight: 600;">
+                                    ${item.status === 'error' ? '❌ Error' : '⏳ Analyzing...'}
+                                </div>
+                            </div>
+                            ${item.error ? `<p style="margin-top: 10px; color: #d32f2f; font-size: 13px;">Error: ${item.error}</p>` : ''}
+                        </div>
+                    `).join('');
+                    
+                    if (data.analyses && data.analyses.length > 0) {
+                        analysesList.innerHTML = pendingHtml + '<hr style="margin: 20px 0;">';
+                    } else {
+                        analysesList.innerHTML = pendingHtml + '<p style="color: #666; text-align: center; padding: 20px; margin-top: 20px;">Analyses are being processed. Please wait a few moments and refresh the page.</p>';
+                        return;
+                    }
+                }
+
+                if (data.analyses && data.analyses.length > 0) {
+                    // Append to existing pending analyses if any
+                    const existingHtml = analysesList.innerHTML;
+                    analysesList.innerHTML = existingHtml + data.analyses.map((analysis, index) => `
+                        <div class="analysis-item expanded" id="analysis-item-${analysis.id}">
+                            <div class="analysis-header" onclick="toggleAnalysis('${analysis.id}')">
+                                <div class="analysis-header-content">
+                                    <h4>
+                                        <a href="${analysis.url || analysis.listing_url}" target="_blank" onclick="event.stopPropagation();">
+                                            ${analysis.email_subject || 'Listing Analysis'}
+                                        </a>
+                                    </h4>
+                                    <p class="analysis-meta">
+                                        From: ${analysis.email_from || 'Unknown'} • 
+                                        ${analysis.created_at ? new Date(analysis.created_at).toLocaleString() : 'Unknown date'}
+                                    </p>
+                                </div>
+                                <span class="analysis-toggle">▼</span>
+                            </div>
+                            <div class="analysis-content-wrapper">
+                                <div class="analysis-content" id="analysis-${analysis.id}"></div>
+                                <div class="analysis-actions">
+                                    <a href="${analysis.url || analysis.listing_url}" target="_blank">View Full Listing →</a>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+
+                    // Render markdown for each analysis
+                    data.analyses.forEach(analysis => {
+                        const contentDiv = document.getElementById(`analysis-${analysis.id}`);
+                        if (contentDiv && window.marked) {
+                            try {
+                                // Clean content - remove code fences if present
+                                let cleanContent = analysis.report.trim();
+                                if (cleanContent.startsWith('```')) {
+                                    cleanContent = cleanContent.replace(/^```[a-z]*\n/, '');
+                                    cleanContent = cleanContent.replace(/\n```$/, '');
+                                }
+                                contentDiv.innerHTML = window.marked.parse(cleanContent);
+                            } catch (e) {
+                                console.error('Error rendering markdown:', e);
+                                contentDiv.innerHTML = analysis.report.replace(/\n/g, '<br>');
+                            }
+                        } else if (contentDiv) {
+                            // Fallback: show as plain text with line breaks
+                            contentDiv.innerHTML = analysis.report.replace(/\n/g, '<br>');
+                        }
+                    });
+                } else if (data.pending && data.pending.length > 0) {
+                    // Only pending analyses, show them
+                    analysesList.innerHTML = '';
+                } else {
+                    analysesList.innerHTML = '<p style="color: #666; text-align: center; padding: 20px;">No analyses yet. Click "Check Email Now" to analyze listings from your emails.</p>';
+                }
+                
+                // If there are pending analyses, auto-refresh after 10 seconds
+                if (data.pending && data.pending.length > 0) {
+                    setTimeout(() => {
+                        console.log('Auto-refreshing analyses...');
+                        loadAnalyses();
+                    }, 10000); // Refresh every 10 seconds
+                }
+            } catch (error) {
+                console.error('Error loading analyses:', error);
+                analysesLoading.style.display = 'none';
+                const errorMsg = error.message || 'Unknown error';
+                analysesList.innerHTML = `<p style="color: #d32f2f; text-align: center; padding: 20px;">
+                    Error loading analyses: ${errorMsg}<br>
+                    <small style="color: #666;">Check the browser console (F12) for more details.</small>
+                </p>`;
+            }
+        }
+
+        // Function to update price field labels based on property type
+        function updatePriceLabels() {
+            const propertyType = document.getElementById('property_type').value;
+            const minLabel = document.getElementById('min_price_label');
+            const maxLabel = document.getElementById('max_price_label');
+            const minInput = document.getElementById('min_rent');
+            const maxInput = document.getElementById('max_rent');
+            
+            if (propertyType === 'buy') {
+                minLabel.textContent = 'Min Price (CHF)';
+                maxLabel.textContent = 'Max Price (CHF)';
+                minInput.placeholder = 'e.g., 500000';
+                maxInput.placeholder = 'e.g., 1000000';
+            } else {
+                minLabel.textContent = 'Min Rent (CHF)';
+                maxLabel.textContent = 'Max Rent (CHF)';
+                minInput.placeholder = 'e.g., 2000';
+                maxInput.placeholder = 'e.g., 4000';
+            }
+        }
+
+        // Function to update price field labels based on property type
+        function updatePriceLabels() {
+            const propertyType = document.getElementById('property_type').value;
+            const minLabel = document.getElementById('min_price_label');
+            const maxLabel = document.getElementById('max_price_label');
+            const minInput = document.getElementById('min_rent');
+            const maxInput = document.getElementById('max_rent');
+            
+            if (minLabel && maxLabel && minInput && maxInput) {
+                if (propertyType === 'buy') {
+                    minLabel.textContent = 'Min Price (CHF)';
+                    maxLabel.textContent = 'Max Price (CHF)';
+                    minInput.placeholder = 'e.g., 500000';
+                    maxInput.placeholder = 'e.g., 1000000';
+                } else {
+                    minLabel.textContent = 'Min Rent (CHF)';
+                    maxLabel.textContent = 'Max Rent (CHF)';
+                    minInput.placeholder = 'e.g., 2000';
+                    maxInput.placeholder = 'e.g., 4000';
+                }
+            }
+        }
+
+        function toggleAnalysis(analysisId) {
+            const item = document.getElementById(`analysis-item-${analysisId}`);
+            if (item) {
+                item.classList.toggle('expanded');
+                item.classList.toggle('collapsed');
+            }
+        }
+
+        criteriaForm.addEventListener('submit', saveCriteria);
+        function toggleAnalysis(analysisId) {
+            const item = document.getElementById(`analysis-item-${analysisId}`);
+            if (item) {
+                item.classList.toggle('expanded');
+                item.classList.toggle('collapsed');
+            }
+        }
+
+        loadCriteria();
+        loadAnalyses();
+    </script>
+</body>
+</html>
+
+
